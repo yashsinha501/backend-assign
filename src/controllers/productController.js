@@ -43,7 +43,9 @@ exports.createProduct = async (req, res) => {
             })),
         });
 
-        await product.save();
+        if(product){
+            await product.save();
+        }
 
         res.status(201).json(product);
         
@@ -76,9 +78,9 @@ exports.updateProduct = async (req, res) => {
             }));
         }
 
-        await updateProduct.save();
+        const updated = await updateProduct.save();
 
-        res.json(updateProduct);
+        res.json(updated);
 
     } catch (error) {
         res.status(500).json({error: error.message});
@@ -123,9 +125,7 @@ exports.searchProducts = async (req,res) => {
         }
         if(searchDescription){
             const products = await Product.find(
-                // $or: [
                     { description: { $regex: searchDescription, $options: 'i' } },
-                // ],
             );
             res.json(products)
         }
